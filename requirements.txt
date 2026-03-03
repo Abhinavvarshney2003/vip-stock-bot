@@ -1,0 +1,10 @@
+python-telegram-bot==20.7
+yfinance
+pandas
+numpy
+mplfinance
+matplotlib
+pillow
+ta
+newsapi-python
+curl_cffi
