@@ -508,22 +508,27 @@ if not TOKEN:
 app = ApplicationBuilder().token(TOKEN).build()
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-async def main():
-    await app.initialize()
-    await app.start()
+import os
 
-    await app.bot.set_webhook(
-        url=f"{WEBHOOK_URL}/{TOKEN}"
-    )
+PORT = int(os.environ.get("PORT", 10000))
+WEBHOOK_URL = os.environ.get("WEBHOOK_URL")
+TOKEN = os.environ.get("BOT_TOKEN")
 
-    print("Webhook set successfully")
+if not TOKEN:
+    raise ValueError("BOT_TOKEN not set")
 
-    await app.run_webhook(
-        listen="0.0.0.0",
-        port=PORT,
-        url_path=TOKEN
-    )
+if not WEBHOOK_URL:
+    raise ValueError("WEBHOOK_URL not set")
+
+app = ApplicationBuilder().token(TOKEN).build()
+app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
 if __name__ == "__main__":
-    print("WEBHOOK BOT STARTING...")
-    asyncio.run(main())
+    print("Starting Webhook Bot...")
+
+    app.run_webhook(
+        listen="0.0.0.0",
+        port=PORT,
+        url_path=TOKEN,
+        webhook_url=f"{WEBHOOK_URL}/{TOKEN}",
+    )
