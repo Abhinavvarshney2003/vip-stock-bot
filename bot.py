@@ -492,15 +492,38 @@ WEBHOOK_URL = os.environ.get("WEBHOOK_URL")
 app = ApplicationBuilder().token(TOKEN).build()
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
+import os
+import asyncio
+
+PORT = int(os.environ.get("PORT", 10000))
+WEBHOOK_URL = os.environ.get("WEBHOOK_URL")
+TOKEN = os.environ.get("BOT_TOKEN")
+
+if not WEBHOOK_URL:
+    raise ValueError("WEBHOOK_URL is not set")
+
+if not TOKEN:
+    raise ValueError("BOT_TOKEN is not set")
+
+app = ApplicationBuilder().token(TOKEN).build()
+app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+
 async def main():
     await app.initialize()
     await app.start()
-    await app.bot.set_webhook(f"{WEBHOOK_URL}/{TOKEN}")
+
+    await app.bot.set_webhook(
+        url=f"{WEBHOOK_URL}/{TOKEN}"
+    )
+
+    print("Webhook set successfully")
+
     await app.run_webhook(
         listen="0.0.0.0",
         port=PORT,
         url_path=TOKEN
     )
 
-print("WEBHOOK BOT STARTING...")
-asyncio.run(main())
+if __name__ == "__main__":
+    print("WEBHOOK BOT STARTING...")
+    asyncio.run(main())
