@@ -16,8 +16,8 @@ from ta.volatility import AverageTrueRange
 from newsapi import NewsApiClient
 
 # ================= CONFIG =================
-TOKEN = "8525733732:AAFeYYcG0raJVd25e55m7Ty0Xogq1STiba4"
-NEWS_API_KEY = "4f63bed65bd24a12abf30cd32eda938c"
+TOKEN = os.getenv("BOT_TOKEN")
+NEWS_API_KEY = os.getenv("NEWS_API_KEY")
 
 newsapi = NewsApiClient(api_key=NEWS_API_KEY)
 
